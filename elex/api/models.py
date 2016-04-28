@@ -673,11 +673,17 @@ class Race(APElection):
 
                     pcts_tot = float(counties[c]['precinctstotal'])
                     pcts_rep = float(counties[c]['precinctsreporting'])
-                    counties[c]['precinctsreportingpct'] = pcts_rep / pcts_tot
+
+                    try:
+                        counties[c]['precinctsreportingpct'] = pcts_rep / pcts_tot
+
+                    except ZeroDivisionError:
+                        counties[c]['precinctsreportingpct'] = 0.0
 
                     counties[c]['votecount'] = sum([
                         r.votecount for
                         r in self.reportingunits if
+                        r.votecount and
                         r.level == 'township' and
                         "Mail Ballots C.D." not in r.reportingunitname and
                         r.fipscode == c
